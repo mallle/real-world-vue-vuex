@@ -1,6 +1,6 @@
 # real-world-vue-vuex
 
--build after the 'Real World Vuex Vue.js' on Vue Mastery
+- build after the 'mastering vuex' on vuemastery.com
 
 ## Project setup
 
