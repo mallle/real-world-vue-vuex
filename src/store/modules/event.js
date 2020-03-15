@@ -25,12 +25,26 @@ export const mutations = {
 }
 export const actions = {
   //takes commit from the context Object - using  object destructuring, and event is the payload, comming from the component
-  createEvent({ commit }, event) {
-    return EventService.postEvent(event).then(() => {
-      commit('ADD_EVENT', event)
-    })
+  createEvent({ commit, dispatch }, event) {
+    return EventService.postEvent(event)
+      .then(() => {
+        commit('ADD_EVENT', event)
+        const notification = {
+          type: 'success',
+          message: 'Your event has been created!'
+        }
+        dispatch('notification/add', notification, { root: true })
+      })
+      .catch(error => {
+        const notification = {
+          type: 'error',
+          message: 'There was a problem creating your event: ' + error.message
+        }
+        dispatch('notification/add', notification, { root: true })
+        throw error
+      })
   },
-  fetchEvents({ commit }, { perPage, page }) {
+  fetchEvents({ commit, dispatch }, { perPage, page }) {
     EventService.getEvents(perPage, page)
       .then(response => {
         console.log('Total: ' + response.headers['x-total-count'])
@@ -38,10 +52,16 @@ export const actions = {
         commit('SET_EVENTS', response.data)
       })
       .catch(error => {
-        console.log('There was an error:', error.response)
+        const notification = {
+          type: 'error',
+          message: 'There was a problem fetchen events: ' + error.message
+        }
+        //Dispatch a action from the namespace notification, adding the
+        //payload there the const notification
+        dispatch('notification/add', notification, { root: true })
       })
   },
-  fetchEvent({ commit, getters }, id) {
+  fetchEvent({ commit, getters, dispatch }, id) {
     //because we already have all events in event,
     //we can use the getter to return only one event
     //instead of sending a new API call.
@@ -56,7 +76,14 @@ export const actions = {
           commit('SET_EVENT', response.data)
         })
         .catch(error => {
-          console.log('There was an error:', error.response)
+          //   console.log('There was an error:', error.response)
+          const notification = {
+            type: 'error',
+            message: 'There was a problem fetchen event: ' + error.message
+          }
+          //Dispatch a action from the namespace notification, adding the
+          //payload there the const notification
+          dispatch('notification/add', notification, { root: true })
         })
     }
   }
