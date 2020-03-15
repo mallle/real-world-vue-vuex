@@ -79,7 +79,9 @@ export default {
   methods: {
     createEvent() {
       this.$store
-        .dispatch('createEvent', this.event)
+        //because we have namespaced the event-module in the store/modules/event.js we need to
+        //add event/actionName
+        .dispatch('event/createEvent', this.event)
         .then(() => {
           this.$router.push({
             name: 'event-show',
@@ -92,7 +94,8 @@ export default {
         })
     },
     createFreshEventObject() {
-      const user = this.$store.state.user
+      //the fist user is the module name, the second user is the state name
+      const user = this.$store.state.user.user
       const id = Math.floor(Math.random() * 10000000)
       return {
         id: id,
