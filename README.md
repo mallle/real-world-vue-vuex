@@ -26,7 +26,7 @@ npm run build
 npm run lint
 ```
 
-### Spin up a little API server
+### Spin up a API server to fetch the data
 
 ```
 json-server --watch db.json
