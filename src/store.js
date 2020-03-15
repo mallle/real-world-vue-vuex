@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import EventService from '@/services/EventService'
 
 Vue.use(Vuex)
 
@@ -15,6 +16,7 @@ export default new Vuex.Store({
       'food',
       'community'
     ],
+    events: [],
     todos: [
       { id: 1, text: '...', done: true },
       { id: 2, text: '...', done: false },
@@ -22,8 +24,20 @@ export default new Vuex.Store({
       { id: 4, text: '...', done: false }
     ]
   },
-  mutations: {},
-  actions: {},
+  mutations: {
+    //Event is the payload coming from the component
+    ADD_EVENT(state, event) {
+      state.events.push(event)
+    }
+  },
+  actions: {
+    //takes commit from the context Object - using  object destructuring, and event is the payload, comming from the component
+    createEvent({ commit }, event) {
+      return EventService.postEvent(event).then(() => {
+        commit('ADD_EVENT', event)
+      })
+    }
+  },
   getters: {
     categoiesLenght: state => {
       return state.categories.length
